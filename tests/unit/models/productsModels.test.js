@@ -16,8 +16,8 @@ const ProductsModel = require('../../../models/Products');
 ] */
 
 
-describe('Exibe todos os produtos do BD', () => {
-  describe('Quando há protudos registrados', () => {
+describe('Exibe todos os produtos do BD na camada Models', () => {
+  describe('Quando há produtos registrados', () => {
     before(() => {
       const mockResult = [[
         {
@@ -61,4 +61,59 @@ describe('Exibe todos os produtos do BD', () => {
       expect(result[0]).to.include.all.keys('id', 'name');
     });
   });
+});
+
+describe('Busca um produtos no BD pelo ID na camada Models', () => {
+  describe('Quando o produto é encontrado', () => {
+    before(() => {
+      const mockResult = [[
+        {
+          "id": 1,
+          "name": "Martelo de Thor"
+        },
+      ], []];
+
+      sinon.stub(connection, 'execute').resolves(mockResult);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Retorna um objeto', async () => {
+      const result = await ProductsModel.getByPk(1);
+
+      expect(result).to.be.an('object');
+    });
+
+    it('O objeto não deve estar vazio', async () => {
+      const result = await ProductsModel.getByPk(1);
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir as chaves id e name', async () => {
+      const result = await ProductsModel.getByPk(1);
+
+      expect(result).to.include.all.keys('id', 'name');
+    });
+  });
+
+  describe('Quando o produto não é encontrado', () => {
+    before(() => {
+      const mockResult = [[], []];
+
+      sinon.stub(connection, 'execute').resolves([mockResult]);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Deve retornar um valor Null', async () => {
+      const result = await ProductsModel.getByPk(200);
+
+      expect(result).to.be.equal(null);
+    });
+  })
 });

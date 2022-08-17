@@ -1,5 +1,5 @@
 const ProductsModel = require('../models/Products');
-const CustomError = require('../errors/CustomError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const productsServices = {
   getAllProducts: async () => {
@@ -10,7 +10,7 @@ const productsServices = {
   getProductsById: async (id) => {
     const product = await ProductsModel.getByPk(id);
     
-    if (!product) throw new CustomError.NotFound('Product not found');
+    if (!product) throw new NotFoundError('Product not found');
 
     return product;
   },
