@@ -54,3 +54,43 @@ describe('Exibe todos os produtos do BD na camada Controller', () => {
     });
   });
 });
+
+describe('Exibe o produto buscado por ID na camada Controller', () => {
+  describe('Quando há produtos registrados', () => {
+
+    const request = {};
+    const response = {};
+
+    before(() => {
+      const mockResult = {
+        "id": 1,
+        "name": "Martelo de Thor"
+      };
+
+      request.params = { id: '1' }
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsServices, 'getProductsById').resolves(mockResult);
+    });
+
+    after(() => {
+      productsServices.getProductsById.restore();
+    });
+
+    it('Retorna o status 200', async () => {
+      await productsController.getProductsById(request, response);
+
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+
+    it('Retorna um objeto', async () => {
+      const product = {
+        "id": 1,
+        "name": "Martelo de Thor"
+      };
+
+      await productsController.getProductsById(request, response);
+      expect(response.json.calledWith(product)).to.be.equal(true);
+    });
+  });
+});
