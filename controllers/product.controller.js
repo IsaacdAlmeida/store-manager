@@ -12,6 +12,12 @@ const productsController = {
 
     return res.status(200).json(product);
   },
+  createProduct: async (req, res) => {
+    const { name } = req.body;
+
+    const product = await productsServices.createProduct(name);
+    return res.status(201).json(product);
+  },
 };
 
 module.exports = productsController;
