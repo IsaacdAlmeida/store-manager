@@ -16,6 +16,7 @@ const productsController = {
     const { name } = req.body;
 
     const product = await productsServices.createProduct(name);
+    console.log(product);
     return res.status(201).json(product);
   },
 };

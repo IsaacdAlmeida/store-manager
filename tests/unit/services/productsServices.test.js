@@ -107,3 +107,38 @@ describe('Busca um produtos no BD pelo ID na camada Services', () => {
     });
   })
 });
+
+describe('insere um novo produto no BD na camada Services', () => {
+  describe('Quando um produto é inserido com sucesso', () => {
+    before(() => {
+      const mockResult = [{
+        "id": 4,
+        "name": "Espada Justiceira"
+      }]
+
+      sinon.stub(ProductsModel, 'createProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.createProduct.restore();
+    });
+
+    it('Retorna um objeto', async () => {
+      const [result] = await productsServices.createProduct("Espada Justiceira");
+
+      expect(result).to.be.an('object');
+    });
+
+    it('O objeto não deve estar vazio', async () => {
+      const [result] = await productsServices.createProduct("Espada Justiceira");
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir as chaves id e name', async () => {
+      const [result] = await productsServices.createProduct("Espada Justiceira");
+
+      expect(result).to.include.all.keys('id', 'name');
+    });
+  });
+});

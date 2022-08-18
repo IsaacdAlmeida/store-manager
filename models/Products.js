@@ -27,7 +27,7 @@ const Products = {
     `, [name]);
 
     const createdProduct = { id: product.insertId, name };
-
+    // console.log(createdProduct); retorna objeto id e name
     return createdProduct;
   },
 };

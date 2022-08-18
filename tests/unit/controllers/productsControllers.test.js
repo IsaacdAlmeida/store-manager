@@ -94,3 +94,42 @@ describe('Exibe o produto buscado por ID na camada Controller', () => {
     });
   });
 });
+
+describe('Insere um novo produto no BD na camada Controller', () => {
+  describe('Quando um produto é inserido corretamente', () => {
+
+    const request = {};
+    const response = {};
+    before(() => {
+      const mockResult = {
+        "id": 4,
+        "name": "espada justiceira"
+      };
+
+      request.body = { name: 'espada justiceira' }
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsServices, 'createProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      productsServices.createProduct.restore();
+    });
+
+    it('Retorna o status 201', async () => {
+      await productsController.createProduct(request, response);
+
+      expect(response.status.calledWith(201)).to.be.equal(true);
+    });
+
+    it('Retorna um objeto', async () => {
+      const product = {
+        "id": 4,
+        "name": "espada justiceira"
+      };
+
+      await productsController.createProduct(request, response);
+      expect(response.json.calledWith(product)).to.be.equal(true);
+    });
+  });
+});

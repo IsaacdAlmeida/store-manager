@@ -117,3 +117,38 @@ describe('Busca um produtos no BD pelo ID na camada Models', () => {
     });
   })
 });
+
+describe('insere um novo produto no BD na camada Models', () => {
+  describe('Quando um produto é inserido com sucesso', () => {
+    before(() => {
+      const mockResult = [{
+        insertedId: 1,
+        name: "espada justiceira"
+      }]
+
+      sinon.stub(connection, 'execute').resolves(mockResult);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Retorna um objeto', async () => {
+      const result = await ProductsModel.createProduct("Espada Justiceira");
+
+      expect(result).to.be.an('object');
+    });
+
+    it('O objeto não deve estar vazio', async () => {
+      const result = await ProductsModel.createProduct("Espada Justiceira");
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir as chaves id e name', async () => {
+      const result = await ProductsModel.createProduct("Espada Justiceira");
+
+      expect(result).to.include.all.keys('id', 'name');
+    });
+  });
+});
