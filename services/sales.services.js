@@ -4,6 +4,20 @@ const ProductsModel = require('../models/Products');
 const NotFoundError = require('../errors/NotFoundError');
 
 const salesServices = {
+  getAllSales: async () => {
+    const allSales = await SalesModel.getAllsales();
+
+    return allSales;
+  },
+
+  getSaleById: async (id) => {
+    const sale = await SalesModel.getByPk(id);
+
+    if (!sale) throw new NotFoundError('Sale not found');
+
+    return sale;
+  },
+
   createSale: async (arrayOfSales) => {
     const allProducts = await ProductsModel.getAllProducts();
     const allProductsIds = allProducts.map((item) => item.id);
