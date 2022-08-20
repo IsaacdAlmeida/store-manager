@@ -152,3 +152,43 @@ describe('insere um novo produto no BD na camada Models', () => {
     });
   });
 });
+
+describe('atualiza um produto no BD na camada Models', () => {
+  describe('Quando um produto é atualizado com sucesso', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        serverStatus: 2,
+        warningStatus: 0,
+        changedRows: 1
+      };
+
+      sinon.stub(connection, 'execute').resolves(mockResult);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Retorna um objeto', async () => {
+      const result = await ProductsModel.updateProduct(1, 'espada justiceira');
+
+      expect(result).to.be.an('object');
+    });
+
+    it('O objeto não deve estar vazio', async () => {
+      const result = await ProductsModel.updateProduct(1, 'espada justiceira');
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir a chave affectedRows', async () => {
+      const result = await ProductsModel.updateProduct(1, 'espada justiceira');
+
+      expect(result).to.include.all.keys('affectedRows');
+    });
+  });
+});

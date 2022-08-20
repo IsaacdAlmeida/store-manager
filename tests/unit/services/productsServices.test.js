@@ -142,3 +142,64 @@ describe('insere um novo produto no BD na camada Services', () => {
     });
   });
 });
+
+describe('Atualiza um produto no BD na camada Services', () => {
+  describe('Quando o produto é atualizado', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        serverStatus: 2,
+        warningStatus: 0,
+        changedRows: 1
+      };
+
+      sinon.stub(ProductsModel, 'updateProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.updateProduct.restore();
+    });
+
+    it('Retorna um número', async () => {
+      const result = await productsServices.updateProduct(1, 'espada justiceira');
+      
+      expect(result).to.be.an('number');
+    });
+
+    it('O número deve ser 1', async () => {
+      const result = await productsServices.updateProduct(1, 'espada justiceira');
+      
+      expect(result).to.deep.equal(1);
+    })
+  });
+
+  describe('Quando o produto não é encontrado', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 0,
+        insertId: 0,
+        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        serverStatus: 2,
+        warningStatus: 0,
+        changedRows: 1
+      };
+
+      sinon.stub(ProductsModel, 'updateProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.updateProduct.restore();
+    });
+
+    it('Um erro deve ser lançado', async () => {
+      const result = productsServices.updateProduct(300, 'espada justiceira');
+      expect(result)
+        .to.eventually.be.rejectedWith('Product not found')
+        .and.be.an.instanceOf(NotFoundError);
+    });
+  })
+});

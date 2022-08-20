@@ -133,3 +133,43 @@ describe('Insere um novo produto no BD na camada Controller', () => {
     });
   });
 });
+
+describe('atualiza produto no BD na camada Controller', () => {
+  describe('Quando um produto é atualizado corretamente', () => {
+
+    const request = {};
+    const response = {};
+    before(() => {
+      const mockResult = {
+        "id": 1,
+        "name": "espada justiceira"
+      };
+
+      request.params = { id: 1 }
+      request.body = { name: 'espada justiceira' }
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsServices, 'updateProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      productsServices.updateProduct.restore();
+    });
+
+    it('Retorna o status 200', async () => {
+      await productsController.updateProduct(request, response);
+
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+
+    it('Retorna um objeto', async () => {
+      const product = {
+        "id": 1,
+        "name": "espada justiceira"
+      };
+
+      await productsController.createProduct(request, response);
+      expect(response.json.calledWith(product)).to.be.equal(true);
+    });
+  });
+});
