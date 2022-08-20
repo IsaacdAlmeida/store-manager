@@ -30,6 +30,18 @@ const Products = {
     // console.log(createdProduct); retorna objeto id e name
     return createdProduct;
   },
+
+  updateProduct: async (id, name) => {
+    const [product] = await connection.query(`
+    UPDATE StoreManager.products
+    SET name = ?
+    WHERE id = ?;
+    `, [name, id]);
+
+    // retorna um objeto com várias chaves: queremos affectedRows
+
+    return product;
+  },
 };
 
 module.exports = Products;
