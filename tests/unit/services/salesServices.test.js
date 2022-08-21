@@ -178,3 +178,62 @@ describe('insere uma nova venda no BD na camada Services', () => {
     });
   }); */
 });
+
+describe('Deleta uma venda no BD na camada Services', () => {
+  describe('Quando a venda é deletada', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        info: '',
+        serverStatus: 2,
+        warningStatus: 0
+      };
+
+      sinon.stub(salesModel, 'deleteSale').resolves(mockResult);
+    });
+
+    after(() => {
+      salesModel.deleteSale.restore();
+    });
+
+    it('Retorna um número', async () => {
+      const result = await salesServices.deleteSale(1);
+
+      expect(result).to.be.an('number');
+    });
+
+    it('O número deve ser 1', async () => {
+      const result = await salesServices.deleteSale(1);
+
+      expect(result).to.deep.equal(1);
+    })
+  });
+
+  describe('Quando o produto não é encontrado', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 0,
+        insertId: 0,
+        info: '',
+        serverStatus: 2,
+        warningStatus: 0
+      };
+
+      sinon.stub(salesModel, 'deleteSale').resolves(mockResult);
+    });
+
+    after(() => {
+      salesModel.deleteSale.restore();
+    });
+
+    it('Um erro deve ser lançado', async () => {
+      const result = salesServices.deleteSale(300);
+      expect(result)
+        .to.eventually.be.rejectedWith('Error: Sale not found')
+        .and.be.an.instanceOf(NotFoundError);
+    });
+  })
+});

@@ -137,3 +137,42 @@ describe('insere uma nova venda no BD na camada Models', () => {
     });
   });
 });
+
+describe('deleta uma venda no BD na camada Models', () => {
+  describe('Quando uma venda é deletada com sucesso', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        info: '',
+        serverStatus: 2,
+        warningStatus: 0
+      };
+
+      sinon.stub(connection, 'execute').resolves(mockResult);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Retorna um objeto', async () => {
+      const result = await SalesModels.deleteSale(10);
+
+      expect(result).to.be.an('object');
+    });
+
+    it('O objeto não deve estar vazio', async () => {
+      const result = await SalesModels.deleteSale(10);
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir a chave affectedRows', async () => {
+      const result = await SalesModels.deleteSale(10);
+
+      expect(result).to.include.all.keys('affectedRows');
+    });
+  });
+});

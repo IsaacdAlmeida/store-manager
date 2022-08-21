@@ -160,3 +160,34 @@ describe('Insere uma nova venda no BD na camada Controller', () => {
     });
   });
 });
+
+describe('deleta venda no BD na camada Controller', () => {
+  describe('Quando a venda é deletada corretamente', () => {
+
+    const request = {};
+    const response = {};
+    before(() => {
+
+      request.params = { id: '1' }
+      response.status = sinon.stub().returns(response);
+      response.end = sinon.stub().returns();
+      sinon.stub(salesServices, 'deleteSale').resolves(1);
+    });
+
+    after(() => {
+      salesServices.deleteSale.restore();
+    });
+
+    it('Retorna o status 204', async () => {
+      await salesController.deleteSale(request, response);
+
+      expect(response.status.calledWith(204)).to.be.equal(true);
+    });
+
+    it('Não retorna nenhuma mensagem', async () => {
+
+      await salesController.deleteSale(request, response);
+      expect(response.end.calledWith()).to.be.equal(true);
+    });
+  });
+});

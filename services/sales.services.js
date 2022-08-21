@@ -46,7 +46,7 @@ const salesServices = {
     const { affectedRows } = response;
 
     if (affectedRows === 0) throw new NotFoundError('Sale not found');
-
+    console.log(response);
     return affectedRows;
   },
 };
