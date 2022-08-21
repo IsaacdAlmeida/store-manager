@@ -180,6 +180,7 @@ describe('deleta produto no BD na camada Controller', () => {
     const request = {};
     const response = {};
     before(() => {
+      
       request.params = { id: '1' }
       response.status = sinon.stub().returns(response);
       response.end = sinon.stub().returns();
@@ -203,3 +204,47 @@ describe('deleta produto no BD na camada Controller', () => {
     });
   });
 });
+
+describe('procura produto no BD na camada Controller', () => {
+  describe('Quando um produto é encontrado', () => {
+    const request = {};
+    const response = {};
+    
+    before(() => {
+      const mockResult = [
+        {
+          "id": 2,
+          "name": "Traje de encolhimento"
+        }
+      ];
+
+      request.query = { q: 'Traje' }
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsServices, 'searchProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      productsServices.searchProduct.restore();
+    });
+
+    it('Retorna o status 200', async () => {
+      await productsController.searchProduct(request, response);
+
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+
+    it('Retorna o array com os produtos encontrados', async () => {
+      const searchedProducts = [
+        {
+          "id": 2,
+          "name": "Traje de encolhimento"
+        }
+      ];
+
+      await productsController.searchProduct(request, response);
+      expect(response.json.calledWith(searchedProducts)).to.be.equal(true);
+    });
+  });
+});
+

@@ -4,18 +4,6 @@ const { expect } = require('chai');
 const connection = require('../../../models/connection');
 const ProductsModel = require('../../../models/Products');
 
-/* const mock = [
-  {
-    "id": 1,
-    "name": "Martelo de Thor"
-  },
-  {
-    "id": 2,
-    "name": "Traje de encolhimento"
-  },
-] */
-
-
 describe('Exibe todos os produtos do BD na camada Models', () => {
   describe('Quando há produtos registrados', () => {
     before(() => {
@@ -230,4 +218,65 @@ describe('deleta um produto no BD na camada Models', () => {
       expect(result).to.include.all.keys('affectedRows');
     });
   });
+});
+
+describe('Busca um produto no BD pelo nome na camada Models', () => {
+  describe('Quando o produto é encontrado', () => {
+    before(() => {
+      const mockResult = [
+        {
+          "id": 2,
+          "name": "Traje de encolhimento"
+        }
+      ];
+
+      sinon.stub(connection, 'execute').resolves(mockResult);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Retorna um array', async () => {
+      const result = await ProductsModel.searchProduct('Traje');
+
+      expect(result).to.be.an('array');
+    });
+
+    it('O array não deve estar vazio', async () => {
+      const result = await ProductsModel.searchProduct('Traje');
+
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir as chaves id e name', async () => {
+      const result = await ProductsModel.searchProduct('Traje');
+
+      expect(result[0]).to.include.all.keys('id', 'name');
+    });
+  });
+
+ /*  describe('Quando o nome não é encontrado', () => {
+    before(() => {
+      const mockResult = [
+        { id: 1, name: 'Martelo de Thor' },
+        { id: 2, name: 'Traje de encolhimento' },
+        { id: 3, name: 'Escudo do Capitão América' }
+      ]
+
+      sinon.stub(connection, 'execute').resolves([mockResult]);
+    });
+
+    after(() => {
+      connection.execute.restore();
+    });
+
+    it('Deve retornar um array', async () => {
+      const result = await ProductsModel.searchProduct('a');
+      console.log(result);
+
+      expect(result[0]).to.be.an('object');
+    });
+  }) */
 });

@@ -264,3 +264,64 @@ describe('Deleta um produto no BD na camada Services', () => {
     });
   })
 });
+
+describe('Busca um produto no BD pelo nome na camada Services', () => {
+  describe('Quando o produto é encontrado', () => {
+    before(() => {
+      const mockResult = [
+        {
+          "id": 2,
+          "name": "Traje de encolhimento"
+        }
+      ];
+
+      sinon.stub(ProductsModel, 'searchProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.searchProduct.restore();
+    });
+
+    it('Retorna um array', async () => {
+      const result = await productsServices.searchProduct('Traje');
+
+      expect(result).to.be.an('array');
+    });
+
+    it('O array não deve estar vazio', async () => {
+      const result = await ProductsModel.searchProduct('Traje');
+
+      expect(result).to.not.be.empty;
+    });
+
+    it('Deve incluir as chaves id e name', async () => {
+      const result = await productsServices.searchProduct('Traje');
+      console.log(result);
+      expect(result[0]).to.include.all.keys('id', 'name');
+    });
+  });
+
+   describe('Quando o nome não é encontrado', () => {
+     before(() => {
+       const mockResult = []
+ 
+       sinon.stub(ProductsModel, 'searchProduct').resolves(mockResult);
+     });
+ 
+     after(() => {
+       ProductsModel.searchProduct.restore();
+     });
+ 
+     it('Deve retornar um array', async () => {
+       const result = await productsServices.searchProduct('a');
+       
+       expect(result).to.be.an('array');
+     });
+
+     it('O array deve estar vazio', async () => {
+       const result = await productsServices.searchProduct('a');
+
+       expect(result).to.be.empty;
+     });
+   })
+});
