@@ -41,12 +41,37 @@ const salesServices = {
     };
   },
 
+  updateSale: async (id, body) => {
+    const sale = await SalesModel.getByPk(id);
+
+    if (!sale) throw new NotFoundError('Sale not found');
+
+    const allProducts = await ProductsModel.getAllProducts();
+    const allProductsIds = allProducts.map((item) => item.id);
+
+    const salesProductId = body.map((item) => item.productId);
+
+    salesProductId.forEach((productsale) => {
+      if (!allProductsIds.includes(productsale)) {
+        throw new NotFoundError('Product not found');
+      }
+    });
+
+    await Promise.all(body
+      .map((item) => SalesProductModel.updateSale(id, item)));
+
+    return {
+      saleId: id,
+      itemsUpdated: body,
+    }; 
+  },
+
   deleteSale: async (id) => {
     const response = await SalesModel.deleteSale(id);
     const { affectedRows } = response;
 
     if (affectedRows === 0) throw new NotFoundError('Sale not found');
-    console.log(response);
+
     return affectedRows;
   },
 };

@@ -20,6 +20,13 @@ const salesController = {
     return res.status(201).json(data);
   },
 
+  updateSale: async (req, res) => {
+    const { id } = req.params;
+    const data = await salesService.updateSale(id, req.body);
+
+    return res.status(200).json(data);
+  },
+
   deleteSale: async (req, res) => {
     const { id } = req.params;
 
