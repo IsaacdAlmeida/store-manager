@@ -5,7 +5,9 @@ const { describe } = require('mocha');
 const { expect } = require('chai');
 const salesServices = require('../../../services/sales.services');
 const salesModel = require('../../../models/Sales');
-const NotFoundError = require('../../../errors/NotFoundError')
+const SalesProductModel = require('../../../models/SalesProducts');
+const ProductsModel = require('../../../models/Products');
+const NotFoundError = require('../../../errors/NotFoundError');
 chai.use(chaiAsPromised);
 
 
@@ -132,20 +134,20 @@ describe('insere uma nova venda no BD na camada Services', () => {
 
 /*   describe('Quando é inserido um id de produto que existe', () => {
     before(() => {
-      mockResult = {
-        id: 3,
-        itemsSold: [
-          {
-            productId: 1,
-            quantity: 2,
-          },
-        ]
-      }
-      sinon.stub(salesModel, 'createSale').resolves(mockResult);
+      mockResult = [
+        { id: 1, name: 'Martelo de Thor' },
+        { id: 2, name: 'Traje de encolhimento' },
+      ];
+      
+      sinon.stub(ProductsModel, 'getAllProducts').resolves(mockResult);
+      sinon.stub(salesModel, 'createSale').resolves(3);
+      sinon.stub(SalesProductModel, 'createSale').resolves();
     });
 
     after(() => {
+      ProductsModel.getAllProducts.restore();
       salesModel.createSale.restore();
+      SalesProductModel.createSale.restore();
     });
 
     it('Retorna um objeto', async () => {
@@ -158,13 +160,19 @@ describe('insere uma nova venda no BD na camada Services', () => {
     });
 
     it('O objeto não deve estar vazio', async () => {
-      const [result] = await salesServices.createSale(mockSale);
+      const [result] = await salesServices.createSale([{
+        "productId": 1,
+        "quantity": 2
+      }]);
 
       expect(result).to.not.be.empty;
     });
 
     it('Deve incluir as chaves id e itemsSold', async () => {
-      const [result] = await salesServices.createSale(mockSale);
+      const [result] = await salesServices.createSale([{
+        "productId": 1,
+        "quantity": 2
+      }]);
 
       expect(result).to.include.all.keys('id', 'itemsSold');
     });

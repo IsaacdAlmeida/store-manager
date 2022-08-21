@@ -203,3 +203,64 @@ describe('Atualiza um produto no BD na camada Services', () => {
     });
   })
 });
+
+describe('Deleta um produto no BD na camada Services', () => {
+  describe('Quando o produto é atualizado', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        serverStatus: 2,
+        warningStatus: 0,
+        changedRows: 1
+      };
+
+      sinon.stub(ProductsModel, 'deleteProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.deleteProduct.restore();
+    });
+
+    it('Retorna um número', async () => {
+      const result = await productsServices.deleteProduct(1);
+
+      expect(result).to.be.an('number');
+    });
+
+    it('O número deve ser 1', async () => {
+      const result = await productsServices.deleteProduct(1);
+
+      expect(result).to.deep.equal(1);
+    })
+  });
+
+  describe('Quando o produto não é encontrado', () => {
+    before(() => {
+      const mockResult = {
+        fieldCount: 0,
+        affectedRows: 0,
+        insertId: 0,
+        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        serverStatus: 2,
+        warningStatus: 0,
+        changedRows: 1
+      };
+
+      sinon.stub(ProductsModel, 'deleteProduct').resolves(mockResult);
+    });
+
+    after(() => {
+      ProductsModel.deleteProduct.restore();
+    });
+
+    it('Um erro deve ser lançado', async () => {
+      const result = productsServices.deleteProduct(300);
+      expect(result)
+        .to.eventually.be.rejectedWith('Error: Product not found')
+        .and.be.an.instanceOf(NotFoundError);
+    });
+  })
+});

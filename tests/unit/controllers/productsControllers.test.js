@@ -168,8 +168,38 @@ describe('atualiza produto no BD na camada Controller', () => {
         "name": "espada justiceira"
       };
 
-      await productsController.createProduct(request, response);
+      await productsController.updateProduct(request, response);
       expect(response.json.calledWith(product)).to.be.equal(true);
+    });
+  });
+});
+
+describe('deleta produto no BD na camada Controller', () => {
+  describe('Quando um produto é deletado corretamente', () => {
+
+    const request = {};
+    const response = {};
+    before(() => {
+      request.params = { id: '1' }
+      response.status = sinon.stub().returns(response);
+      response.end = sinon.stub().returns();
+      sinon.stub(productsServices, 'deleteProduct').resolves();
+    });
+
+    after(() => {
+      productsServices.deleteProduct.restore();
+    });
+
+    it('Retorna o status 204', async () => {
+      await productsController.deleteProduct(request, response);
+
+      expect(response.status.calledWith(204)).to.be.equal(true);
+    });
+
+    it('Não retorna nenhuma mensagem', async () => {
+      
+      await productsController.deleteProduct(request, response);
+      expect(response.end.calledWith()).to.be.equal(true);
     });
   });
 });
