@@ -23,11 +23,20 @@ const productsServices = {
   },
 
   updateProduct: async (id, name) => {
-    const product = await ProductsModel.updateProduct(id, name);
-    const { affectedRows } = product; // retorna 1 ou 0
+    const response = await ProductsModel.updateProduct(id, name);
+    const { affectedRows } = response; // retorna 1 ou 0
 
     if (affectedRows === 0) throw new NotFoundError('Product not found');
     
+    return affectedRows;
+  },
+
+  deleteProduct: async (id) => {
+    const response = await ProductsModel.deleteProduct(id);
+    const { affectedRows } = response;
+
+    if (affectedRows === 0) throw new NotFoundError('Product not found');
+
     return affectedRows;
   },
 };
