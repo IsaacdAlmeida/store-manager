@@ -44,12 +44,14 @@ const Products = {
   },
 
   deleteProduct: async (id) => {
-    const response = await connection.query(`
+    const [response] = await connection.query(`
     DELETE FROM StoreManager.products
     WHERE id = ?;
     `, [id]);
 
-    return [response];
+    console.log(response);
+
+    return response;
   },
 };
 

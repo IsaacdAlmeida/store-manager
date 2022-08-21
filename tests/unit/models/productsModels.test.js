@@ -200,34 +200,34 @@ describe('deleta um produto no BD na camada Models', () => {
         fieldCount: 0,
         affectedRows: 1,
         insertId: 0,
-        info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+        info: '',
         serverStatus: 2,
-        warningStatus: 0,
-        changedRows: 1
+        warningStatus: 0
       };
 
-      sinon.stub(connection, 'query').resolves(mockResult);
+      sinon.stub(connection, 'execute').resolves(mockResult);
     });
 
     after(() => {
-      connection.query.restore();
+      connection.execute.restore();
     });
 
     it('Retorna um objeto', async () => {
-      const result = await ProductsModel.deleteProduct(2);
-      expect(result[0]).to.be.an('object');
+      const result = await ProductsModel.deleteProduct(10);
+ 
+      expect(result).to.be.an('object');
     });
 
     it('O objeto não deve estar vazio', async () => {
-      const result = await ProductsModel.deleteProduct(2);
+      const result = await ProductsModel.deleteProduct(10);
 
       expect(result).to.not.be.empty;
     });
 
     it('Deve incluir a chave affectedRows', async () => {
-      const result = await ProductsModel.deleteProduct(2);
+      const result = await ProductsModel.deleteProduct(10)
 
-      expect(result[0]).to.include.all.keys('affectedRows');
+      expect(result).to.include.all.keys('affectedRows');
     });
   });
 });
