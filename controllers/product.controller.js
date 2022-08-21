@@ -37,6 +37,14 @@ const productsController = {
 
     return res.status(204).end();
   },
+
+  searchProduct: async (req, res) => {
+    const { q } = req.query;
+
+    const searchProduct = await productsServices.searchProduct(q);
+
+    return res.status(200).json(searchProduct);
+  },
 };
 
 module.exports = productsController;

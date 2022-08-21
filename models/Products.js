@@ -53,6 +53,15 @@ const Products = {
 
     return response;
   },
+
+  searchProduct: async (q) => {
+    const [product] = await connection.query(`
+    SELECT * FROM StoreManager.products 
+    WHERE name LIKE ?;
+    `, [`%${q}%`]);
+
+    return product;
+  },
 };
 
 module.exports = Products;

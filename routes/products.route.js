@@ -4,6 +4,7 @@ const productValidator = require('../middlewares/products.validators');
 
 const productsRoute = Router();
 
+productsRoute.get('/search', productsController.searchProduct);
 productsRoute.get('/', productsController.getAllProducts);
 productsRoute.get('/:id', productsController.getProductsById);
 productsRoute.post('/', productValidator.validateName, productsController.createProduct);

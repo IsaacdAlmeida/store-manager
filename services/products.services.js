@@ -39,6 +39,14 @@ const productsServices = {
 
     return affectedRows;
   },
+
+  searchProduct: async (q) => {
+    const product = await ProductsModel.searchProduct(q);
+
+    if (product.length === 0) await ProductsModel.getAllProducts();
+
+    return product;
+  },
 };
 
 module.exports = productsServices;
