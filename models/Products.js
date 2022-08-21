@@ -49,8 +49,6 @@ const Products = {
     WHERE id = ?;
     `, [id]);
 
-    console.log(response);
-
     return response;
   },
 

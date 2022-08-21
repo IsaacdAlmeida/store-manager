@@ -40,6 +40,15 @@ const salesServices = {
       itemsSold: [...arrayOfSales],
     };
   },
+
+  deleteSale: async (id) => {
+    const response = await SalesModel.deleteSale(id);
+    const { affectedRows } = response;
+
+    if (affectedRows === 0) throw new NotFoundError('Sale not found');
+
+    return affectedRows;
+  },
 };
 
 module.exports = salesServices;

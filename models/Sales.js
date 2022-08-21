@@ -43,6 +43,15 @@ const Sales = {
 
     return saleId;
   },
+
+  deleteSale: async (id) => {
+    const [response] = await connection.query(`
+    DELETE FROM StoreManager.sales
+    WHERE id = ?;
+    `, [id]);
+
+    return response;
+  },
 };
 
 module.exports = Sales;

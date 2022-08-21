@@ -9,5 +9,6 @@ salesRoute.post('/',
   salesProductsValidator.validateProductId,
   salesProductsValidator.validateQuantity,
   salesController.createSale);
+salesRoute.delete('/:id', salesController.deleteSale);
 
 module.exports = salesRoute;
